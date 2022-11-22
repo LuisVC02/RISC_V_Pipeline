@@ -1,0 +1,30 @@
+module Fetch_register(
+	input clk_i;
+	input PC_p4_i [31:0];
+	input PC_i [31:0];
+	input Instruction_i [31:0];
+	output red PC_p4_o [31:0];
+	output reg PC_o [31:0];
+	output reg Instruction_o [31:0];
+);
+
+reg PC_p4_r[31:0];
+reg PC_r[31:0];
+reg Instruction_r[31:0];
+
+always@(clk_i)
+	begin
+		if(clk_i)
+			begin
+				PC_p4_o = PC_p4_r;
+				PC_o = PC_r;
+				Instruction_o = Instruction_r;
+			end
+		else
+			begin
+				PC_p4_r = PC_p4_i;
+				PC_r = PC_i;
+				Instruction_r = Instruction_i;
+			end
+	end
+endmodule

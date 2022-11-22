@@ -1,0 +1,66 @@
+module Decode_register(
+	input Mul_i;
+	input Reg_w_i;
+	input M_to_R_i;
+	input Mem_W_i;
+	input Mem_Rd_i;
+	input Jal_i;
+	input Branch_i;
+	input ALU_src_i;
+	input ALU_op_i;
+	input Jal_select_i;
+	input Inm_result_i[31:0];
+	input PC_i[31:0];
+	input PC_p4_i[31:0];
+	input Reg1_i[31:0];
+	input Reg2_i[31:0];
+	
+	output Mul_o;
+	output Reg_w_o;
+	output M_to_R_o;
+	output Mem_W_o;
+	output Mem_Rd_o;
+	output Jal_o;
+	output Branch_o;
+	output ALU_src_o;
+	output ALU_op_o;
+	output Jal_select_o;
+	output Inm_result_o[31:0];
+	output PC_o[31:0];
+	output PC_p4_o[31:0];
+	output Reg1_o[31:0];
+	output Reg2_o[31:0];
+);
+
+	reg Mul_r;
+	reg Reg_w_r;
+	reg M_to_R_r;
+	reg Mem_W_r;
+	reg Mem_Rd_r;
+	reg Jal_r;
+	reg Branch_r;
+	reg ALU_src_r;
+	reg ALU_op_r;
+	reg Jal_select_r;
+	reg Inm_result_r[31:0];
+	reg PC_r[31:0];
+	reg PC_p4_r[31:0];
+	reg Reg1_r[31:0];
+	reg Reg2_r[31:0];
+
+always@(clk_i)
+	begin
+		if(clk_i)
+			begin
+				PC_p4_o = PC_p4_r;
+				PC_o = PC_r;
+				Instruction_o = Instruction_r;
+			end
+		else
+			begin
+				PC_p4_r = PC_p4_i;
+				PC_r = PC_i;
+				Instruction_r = Instruction_i;
+			end
+	end
+endmodule

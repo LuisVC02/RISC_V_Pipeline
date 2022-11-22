@@ -1,0 +1,132 @@
+module Fetch_register(
+	input clk_i;
+	input reset_i;
+
+	input Reg_w_i;
+	input M_to_R_i;
+	input Mem_W_i;
+	input Mem_Rd_i;
+	input Jal_i;
+	input Branch_i;
+	input Jal_Alu_i;
+	input Inm_result_i[31:0];
+	input PC_i[31:0];
+	input PC_p4_i[31:0];
+	input Reg2_i[31:0];
+	input RegD_i[3:0];
+	input ALU_result_i[31:0];
+	
+	output Reg_w_o;
+	output M_to_R_o;
+	output Mem_W_o;
+	output Mem_Rd_o;
+	output Jal_o;
+	output Branch_o;
+	output Jal_Alu_o;
+	output Inm_result_o[31:0];
+	output PC_o[31:0];
+	output PC_p4_o[31:0];
+	output Reg2_o[31:0];
+	output RegD_o[3:0];
+	output ALU_result_o[31:0];
+);
+
+	reg Reg_w_r;
+	reg M_to_R_r;
+	reg Mem_W_r;
+	reg Mem_Rd_r;
+	reg Jal_r;
+	reg Branch_r;
+	reg Jal_Alu_r;
+	reg Inm_result_r[31:0];
+	reg PC_r[31:0];
+	reg PC_p4_r[31:0];
+	reg Reg2_r[31:0];
+	reg RegD_r[3:0];
+	reg ALU_result_r[31:0];
+
+always@(clk_i)
+	begin
+		if(clk_i)
+			begin
+				Reg_w_o = Reg_w_r;
+				M_to_R_o = M_to_R_r;
+				Mem_W_o = Mem_W_r_r;
+				Mem_Rd_o = Mem_Rd_r;
+				Jal_o = Jal_r;
+				Branch_o = Branch_r;
+				Jal_Alu_o = Jal_Alu_r;
+				Inm_result_o = Inm_resutl_r;
+				PC_o = PC_r;
+				PC_p4_o = PC_p4_r;
+				Reg2_o = Reg2_r;
+				RegD_o = RegD_r:
+				ALU_result_o = ALU_result_r;
+			
+			
+				Reg_w_r = Reg_w_r;
+				M_to_R_r = M_to_R_r;
+				Mem_W_r = Mem_W_r_r;
+				Mem_Rd_r = Mem_Rd_r;
+				Jal_r = Jal_r;
+				Branch_r = Branch_r;
+				Jal_Alu_r = Jal_Alu_r;
+				Inm_result_r = Inm_resutl_r;
+				PC_r = PC_r;
+				PC_p4_r = PC_p4_r;
+				Reg2_r = Reg2_r;
+				RegD_r = RegD_r:
+				ALU_result_r = ALU_result_r;
+			end
+		else
+			begin
+				if(reset_i)
+					begin
+						{Reg_w_o Reg_w_r} = 2'b00;
+						{M_to_R_o, M_to_R_r} = 2'b00;
+						{Mem_W_o, Mem_W_r} = 2'b00;
+						{Mem_Rd_o, Mem_Rd_o} = 2'b00;
+						{Jal_o, Jal_r} = 2'b00;
+						{Branch_o, Branch_r} = 2'b00;
+						{Jal_Alu_o, Jal_Alu_r} = 2'b00;
+						{Inm_result_o, Inm_result_r} = {0,0};
+						{PC_o, PC_r} = {0,0};
+						{PC_p4_o, PC_p4_r} = {0,0};
+						{Reg2_o, Reg2_r} = {0,0};
+						{RegD_o, RegD_r} = 8'h00;
+						{ALU_result_o, ALU_result_r} = {0,0};
+					end
+				else
+					begin
+						Reg_w_o = Reg_w_o;
+						M_to_R_o = M_to_R_o;
+						Mem_W_o = Mem_W_r_o;
+						Mem_Rd_o = Mem_Rd_o;
+						Jal_o = Jal_o;
+						Branch_o = Branch_o;
+						Jal_Alu_o = Jal_Alu_o;
+						Inm_result_o = Inm_resutl_o;
+						PC_o = PC_o;
+						PC_p4_o = PC_p4_o;
+						Reg2_o = Reg2_o;
+						RegD_o = RegD_o:
+						ALU_result_o = ALU_result_o;
+					
+						Reg_w_r = Reg_w_i;
+						M_to_R_r = M_to_R_i;
+						Mem_W_r = Mem_W_r_i;
+						Mem_Rd_r = Mem_Rd_i;
+						Jal_r = Jal_i;
+						Branch_r = Branch_i;
+						Jal_Alu_r = Jal_Alu_i;
+						Inm_result_r = Inm_resutl_i;
+						PC_r = PC_i;
+						PC_p4_r = PC_p4_i;
+						Reg2_r = Reg2_i;
+						RegD_r = RegD_i:
+						ALU_result_r= ALU_result_i;
+					end
+			end
+			
+	end
+endmodule

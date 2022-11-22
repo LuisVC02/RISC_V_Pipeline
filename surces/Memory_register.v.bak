@@ -1,0 +1,40 @@
+module Fetch_register(
+	input clk_i;
+	
+	input Data_to_reg_i[31:0];
+	input Reg_W_i;
+	input Reg_D_i[3:0];
+	
+	output Data_to_reg_o[31:0];
+	output Reg_W_o;
+	output Reg_D_o[3:0];
+);
+
+reg Data_to_reg_r[31:0];
+reg Reg_W_r;
+reg Reg_D_r[3:0];
+
+always@(clk_i)
+	begin
+		if(clk_i)
+			begin
+				Data_to_reg_o = Data_to_reg_r;
+				Reg_W_o = Reg_W_r;
+				Reg_D_o = Reg_D_r;
+				
+				Data_to_reg_r = Data_to_reg_r;
+				Reg_W_r = Reg_W_r;
+				Reg_D_r = Reg_D_r;
+			end
+		else
+			begin
+				Data_to_reg_r = Data_to_reg_i;
+				Reg_W_r = Reg_W_i;
+				Reg_D_r = Reg_D_i;
+				
+				Data_to_reg_o = Data_to_reg_o;
+				Reg_W_o = Reg_W_o;
+				Reg_D_o = Reg_D_o;
+			end
+	end
+endmodule
