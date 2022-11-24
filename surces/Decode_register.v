@@ -18,6 +18,8 @@ module Decode_register(
 	input [31:0]PC_p4_i,
 	input [31:0]Reg1_i,
 	input [31:0]Reg2_i,
+	input [4:0]NR1_i,
+	input [4:0]NR2_i,
 	input [4:0]RegD_i,
 	input [1:0]Branch_mux_i,
 	
@@ -37,6 +39,8 @@ module Decode_register(
 	output reg [31:0]PC_p4_o,
 	output reg [31:0]Reg1_o,
 	output reg [31:0]Reg2_o,
+	output reg [4:0]NR1_o,
+	output reg [4:0]NR2_o,
 	output reg [4:0]RegD_o,
 	output reg [1:0]Branch_mux_o
 );
@@ -60,7 +64,7 @@ module Decode_register(
 	reg [3:0]RegD_r;
 	reg [1:0]Branch_mux_r;*/
 
-always@(posedge clk_i)
+always@(posedge clk_i or posedge reset_i)
 	begin
 		if(reset_i)
 			begin
@@ -80,6 +84,8 @@ always@(posedge clk_i)
 				PC_p4_o = 0;
 				Reg1_o = 0;
 				Reg2_o = 0;
+				NR1_o = 5'b00000;
+				NR2_o = 5'b00000;
 				RegD_o = 5'b00000;
 				Branch_mux_o = 2'b00;
 			end
@@ -101,6 +107,8 @@ always@(posedge clk_i)
 				PC_p4_o = PC_p4_i;
 				Reg1_o = Reg1_i;
 				Reg2_o = Reg2_i;
+				NR1_o = NR1_i;
+				NR2_o = NR2_i;
 				RegD_o = RegD_i;
 				Branch_mux_o = Branch_mux_i;
 			end

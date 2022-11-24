@@ -26,7 +26,7 @@ module Register
 
 
 
-always@(negedge reset or posedge clk) begin
+always@(negedge reset or negedge clk) begin
 	if(reset==0)
 		DataOutput <= start_value;
 	else	

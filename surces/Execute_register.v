@@ -53,8 +53,6 @@ always@(posedge clk_i)
 				M_to_R_o = 1'b0;
 				Mem_W_o = 1'b0;
 				Mem_Rd_o = 1'b0;
-				Jal_o = 1'b0;
-				Branch_o = 1'b0;
 				Jal_Alu_o = 1'b0;
 				Inm_result_o = 0;
 				PC_o = 0;
@@ -62,6 +60,8 @@ always@(posedge clk_i)
 				Reg2_o = 0;
 				RegD_o = 5'b00000;
 				ALU_result_o = 0;
+				Jal_o = 1'b0;
+				Branch_o = 1'b0;
 			end
 		else
 			begin

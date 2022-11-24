@@ -200,6 +200,8 @@ wire [3:0]ALU_operation;
 
 wire [31:0]Reg_1;
 wire [31:0]Reg_2;
+wire [4:0]NR1_DR;
+wire [4:0]NR2_DR;
 
 wire [31:0]Inm_result;
 // -----------------------------------------------------------------
@@ -315,6 +317,8 @@ Decode
 	.PC_p4_i(PC_p4_FR),
 	.Reg1_i(Reg_1),
 	.Reg2_i(Reg_2),
+	.NR1_i(Instruction_FR[19:15]),
+	.NR2_i(Instruction_FR[24:20]),
 	.RegD_i(Instruction_FR[11:7]),
 	.Branch_mux_i({Instruction_FR[14], Instruction_FR[12]}),
 	
@@ -334,6 +338,8 @@ Decode
 	.PC_p4_o(PC_p4_DR),
 	.Reg1_o(Reg1_DR),
 	.Reg2_o(Reg2_DR),
+	.NR1_o(NR1_DR),
+	.NR2_o(NR2_DR),
 	.RegD_o(RegD_DR),
 	.Branch_mux_o(Branch_mux_DR)
 );
@@ -384,7 +390,48 @@ wire [31:0]Reg2_ER;
 wire [4:0]RegD_ER;
 // -----------------------------------------------------------------
 
+// Wires of fordward unit ------------------------------------------
+
+wire [31:0] Fwd_E_to_MA_r1;
+wire [31:0] Fwd_E_to_MA_r2;
+wire [31:0] Fwd_to_ALU_r1;
+wire [31:0] Fwd_to_ALU_r2;
+// -----------------------------------------------------------------
+
 assign Jal_ALU = Jal_DR & (~Jal_select_DR);
+
+// Fordward unit ---------------------------------------------------
+Forward_unit
+Fordward_Execute
+(
+	.reset_i(reset),
+	.R1_i(NR1_DR),
+	.R2_i(NR2_DR),
+	.RD_i(RegD_ER),
+	.Reg1_i(Fwd_E_to_MA_r1),
+	.Reg2_i(Fwd_E_to_MA_r2),
+	.ALU_result(ALU_result_ER),
+	
+	.Reg1_o(Fwd_to_ALU_r1),
+	.Reg2_o(Fwd_to_ALU_r2)
+
+);
+Forward_unit
+Fordward_MemoryAccess
+(
+	.reset_i(reset),
+	.R1_i(NR1_DR),
+	.R2_i(NR2_DR),
+	.RD_i(RegD_MR),
+	.Reg1_i(Reg1_DR),
+	.Reg2_i(Reg2_DR),
+	.ALU_result(Write_back_data_MR),
+	
+	.Reg1_o(Fwd_E_to_MA_r1),
+	.Reg2_o(Fwd_E_to_MA_r2)
+
+);
+// -----------------------------------------------------------------
 
 // Branch mux ------------------------------------------------------
 assign not_Zero = ~Zero_o;
@@ -411,7 +458,7 @@ Multiplexer_2_to_1
 MUX_REG_OR_IMM_FOR_ALU
 (
 	.Selector_i(ALU_src_DR),
-	.Mux_Data_0_i(Reg2_DR),
+	.Mux_Data_0_i(Fwd_to_ALU_r2),
 	.Mux_Data_1_i(Inm_result_DR),
 	
 	.Mux_Output_o(ALU_data)
@@ -426,7 +473,7 @@ ALU_UNIT
 	.ALU_Operation_i(ALU_op_DR),
 	.Zero_o(Zero_o),
 	.Carry_o(Carry_o),
-	.A_i(Reg1_DR),
+	.A_i(Fwd_to_ALU_r1),
 	.B_i(ALU_data),
 	.ALU_Result_o(ALU_result)
 );
@@ -438,8 +485,8 @@ assign mul_and = Mul_DR & Mul_r_DR;
 Multiplicador 
 Multiplicator
 (
-	.a_i(Reg1_DR),
-	.b_i(Reg2_DR),
+	.a_i(Fwd_to_ALU_r1),
+	.b_i(Fwd_to_ALU_r2),
 	
 	.result(MUL_result)
 );
@@ -474,7 +521,7 @@ Execute
 	.Inm_result_i(Inm_result_DR),
 	.PC_i(PC_DR),
 	.PC_p4_i(PC_p4_DR),
-	.Reg2_i(Reg2_DR),
+	.Reg2_i(Fwd_to_ALU_r2),
 	.RegD_i(RegD_DR),
 	.ALU_result_i(Result),
 	
@@ -586,6 +633,6 @@ Memory_access
 
 
 // Salida para calculo de clk_rate
-//assign Write_Data_out = data_to_reg;
+//assign Write_Data_out = RegD_MR;
 
 endmodule
