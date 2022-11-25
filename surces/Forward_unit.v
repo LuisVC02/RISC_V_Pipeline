@@ -23,22 +23,20 @@ module Forward_unit(
 						end
 					else
 						begin
-							if(R1_i == RD_i || R2_i == RD_i)
+							if(R1_i == RD_i)
 								begin
-									if(R1_i == RD_i)
-										begin
-											Reg1_o = ALU_result;
-											Reg2_o = Reg2_i;
-										end
-									else
-										begin
-											Reg2_o = ALU_result;	
-											Reg1_o = Reg1_i;
-										end
+									Reg1_o = ALU_result;
 								end
 							else
 								begin
 									Reg1_o = Reg1_i;
+								end
+							if(R2_i == RD_i)
+								begin
+									Reg2_o = ALU_result;	
+								end
+							else
+								begin
 									Reg2_o = Reg2_i;
 								end
 						end

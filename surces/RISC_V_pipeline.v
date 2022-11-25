@@ -39,9 +39,15 @@ wire [31:0]Write_back_data_MR;
 wire Reg_Write_MR;
 wire [4:0]RegD_MR;
 
+wire clk_pc;
+wire reg_clk;
+wire reset_DR;
+wire Hazzard_Control_Stall_ER;
+
 // -----------------------------------------------------------------
 
 assign Hazzard_Control_ER = Jal_inm_ER | Branch_ER | ~reset; 
+assign Hazzard_Control_Stall_DR = Jal_inm_ER | Branch_ER | ~reset | reset_DR; 
 
 // *****************************************************************
 // ********************                       **********************
@@ -132,7 +138,7 @@ MUX_FOR_INM_REG
 // PC -------------------
 PC_Register
 PC(
-	.clk(clk),
+	.clk(clk_pc),
 	.reset(reset),
 	.Next_PC(PC_p_or_pAlu),
 	.PC_Value(PC_w)
@@ -156,7 +162,7 @@ Fetch_register
 F_to_D_reg
 (
 	// input --------
-	.clk_i(clk),
+	.clk_i(reg_clk),
 	.reset_i(reset),
 	.PC_p4_i(PC_p4_w),
 	.PC_i(PC_w),
@@ -299,7 +305,7 @@ Decode_register
 Decode
 (
 	.clk_i(clk),
-	.reset_i(Hazzard_Control_ER),
+	.reset_i(Hazzard_Control_Stall_DR),
 
 	.Mul_i(Mul_c),
 	.Mul_r_i(Instruction_FR[25]),
@@ -430,6 +436,23 @@ Fordward_MemoryAccess
 	.Reg1_o(Fwd_E_to_MA_r1),
 	.Reg2_o(Fwd_E_to_MA_r2)
 
+);
+// -----------------------------------------------------------------
+
+// Stall Gen -------------------------------------------------------
+Stall_gen
+stall
+(
+	.Mem_Rd_i(Mem_Rd_DR),
+	.clk_i(clk),
+	.Reg1_i(Instruction_FR[19:15]),
+	.Reg2_i(Instruction_FR[24:20]),
+	.RegD_i(RegD_DR),
+	
+	.clk_pc_o(clk_pc),
+	.clk_reg_o(reg_clk),
+	.reset_ER_o(reset_DR)
+	
 );
 // -----------------------------------------------------------------
 

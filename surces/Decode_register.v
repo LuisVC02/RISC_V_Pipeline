@@ -64,7 +64,7 @@ module Decode_register(
 	reg [3:0]RegD_r;
 	reg [1:0]Branch_mux_r;*/
 
-always@(posedge clk_i or posedge reset_i)
+always@(posedge clk_i)
 	begin
 		if(reset_i)
 			begin
