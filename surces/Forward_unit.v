@@ -6,8 +6,7 @@ module Forward_unit(
 	input [31:0]Reg1_i,
 	input [31:0]Reg2_i,
 	input [31:0]ALU_result,
-	
-	output reg [1:0]Dep_o,
+
 	output reg [31:0]Reg1_o,
 	output reg [31:0]Reg2_o
 

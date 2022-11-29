@@ -14,9 +14,9 @@ module RISC_V_pipeline
 (
 	// Inputs
 	input clk,
-	input reset
+	input reset,
 	
-	//output [31:0]     Write_Data_out
+	output [31:0]     Write_Data_out
 
 );
 
@@ -656,6 +656,6 @@ Memory_access
 
 
 // Salida para calculo de clk_rate
-//assign Write_Data_out = RegD_MR;
+assign Write_Data_out = RegD_MR;
 
 endmodule
