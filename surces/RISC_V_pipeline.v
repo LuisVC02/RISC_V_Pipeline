@@ -392,7 +392,8 @@ wire M_to_R_ER;
 wire Mem_W_ER;
 wire Mem_Rd_ER;
 wire [31:0]PC_p4_ER;
-wire [31:0]Reg2_ER;
+wire [31:0]Reg2_data_ER;
+wire [4:0]Reg2_ER;
 wire [4:0]RegD_ER;
 // -----------------------------------------------------------------
 
@@ -444,6 +445,7 @@ Stall_gen
 stall
 (
 	.Mem_Rd_i(Mem_Rd_DR),
+	.Mem_W_i(Mem_W_c),
 	.clk_i(clk),
 	.Reg1_i(Instruction_FR[19:15]),
 	.Reg2_i(Instruction_FR[24:20]),
@@ -544,7 +546,8 @@ Execute
 	.Inm_result_i(Inm_result_DR),
 	.PC_i(PC_DR),
 	.PC_p4_i(PC_p4_DR),
-	.Reg2_i(Fwd_to_ALU_r2),
+	.Reg2_data_i(Fwd_to_ALU_r2),
+	.Reg2_i(NR2_DR),
 	.RegD_i(RegD_DR),
 	.ALU_result_i(Result),
 	
@@ -558,6 +561,7 @@ Execute
 	.Inm_result_o(Inmediate_data_for_PC_ER),
 	.PC_o(PC_ER),
 	.PC_p4_o(PC_p4_ER),
+	.Reg2_data_o(Reg2_data_ER),
 	.Reg2_o(Reg2_ER),
 	.RegD_o(RegD_ER),
 	.ALU_result_o(ALU_result_ER)
@@ -586,6 +590,23 @@ Execute
 wire [31:0]Data_to_reg;
 wire [31:0]Mem_or_alu;
 wire [31:0]Memory_data;
+wire [31:0]Data_to_mem;
+wire Mem_Rd_WB;
+// -----------------------------------------------------------------
+
+// Memory copy -----------------------------------------------------
+Memory_copy
+Copy_unit
+(
+	.Mem_R_i(Mem_Rd_WB),
+	.Mem_W_i(Mem_W_ER),
+	.Reg2_i(Reg2_ER),
+	.RegD_i(RegD_MR),
+	.RegD_data_i(Write_back_data_MR),
+	.Reg2_data_i(Reg2_data_ER),
+	
+	.Data_to_memory(Data_to_mem)
+);
 // -----------------------------------------------------------------
 
 // Selector de guardar en registros para el jal --------------------
@@ -630,7 +651,7 @@ RAM
 	.clk(clk),
 	.Mem_Write_i(Mem_W_ER),
 	.Mem_Read_i(Mem_Rd_ER),
-	.Write_Data_i(Reg2_ER),
+	.Write_Data_i(Data_to_mem),
 	.Address_i(ALU_result_ER),
 
 	.Read_Data_o(Memory_data)
@@ -644,9 +665,13 @@ Memory_access
 	.clk_i(clk),
 	.reset_i(reset),
 	
+	.Mem_R_i(Mem_Rd_ER),
+	
 	.Data_to_reg_i(Data_to_reg),
 	.Reg_W_i(Reg_W_ER),
 	.Reg_D_i(RegD_ER),
+	
+	.Mem_R_o(Mem_Rd_WB),
 	
 	.Data_to_reg_o(Write_back_data_MR),
 	.Reg_W_o(Reg_Write_MR),

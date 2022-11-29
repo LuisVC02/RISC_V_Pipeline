@@ -12,7 +12,8 @@ module Execute_register(
 	input [31:0]Inm_result_i,
 	input [31:0]PC_i,
 	input [31:0]PC_p4_i,
-	input [31:0]Reg2_i,
+	input [31:0]Reg2_data_i,
+	input [4:0]Reg2_i,
 	input [4:0]RegD_i,
 	input [31:0]ALU_result_i,
 	
@@ -26,7 +27,8 @@ module Execute_register(
 	output reg [31:0]Inm_result_o,
 	output reg [31:0]PC_o,
 	output reg [31:0]PC_p4_o,
-	output reg [31:0]Reg2_o,
+	output reg [31:0]Reg2_data_o,
+	output reg [4:0]Reg2_o,
 	output reg [4:0]RegD_o,
 	output reg [31:0]ALU_result_o
 );
@@ -44,7 +46,8 @@ always@(posedge clk_i)
 				Inm_result_o = 0;
 				PC_o = 0;
 				PC_p4_o = 0;
-				Reg2_o = 0;
+				Reg2_data_o = 0;
+				Reg2_o = 5'b00000;
 				RegD_o = 5'b00000;
 				ALU_result_o = 0;
 				Jal_o = 1'b0;
@@ -62,6 +65,7 @@ always@(posedge clk_i)
 				Inm_result_o = Inm_result_i;
 				PC_o = PC_i;
 				PC_p4_o = PC_p4_i;
+				Reg2_data_o = Reg2_data_i;
 				Reg2_o = Reg2_i;
 				RegD_o = RegD_i;
 				ALU_result_o = ALU_result_i;
